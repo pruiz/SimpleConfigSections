@@ -81,7 +81,7 @@ namespace SimpleConfigSections
             var validators = mi.GetAttributes<ValidationAttribute>();
             if (validators.IsNullOrEmpty() == false)
             {
-                validator = new CompositeConfigurationValidator(validators, mi.Name);
+                validator = new CompositeConfigurationValidator(validators, mi);
             }
             return validator;
         }

@@ -8,6 +8,7 @@ namespace SimpleConfigSections
 {
     internal static class ReflectionHelpers
     {
+		private static readonly BindingFlags _publicFlags = BindingFlags.Instance | BindingFlags.DeclaredOnly | BindingFlags.Public;
         private static readonly BindingFlags _privateFlags = BindingFlags.Instance | BindingFlags.DeclaredOnly | BindingFlags.NonPublic;
 
         public static bool RunningOnMono
@@ -32,6 +33,11 @@ namespace SimpleConfigSections
             return type.GetField(fieldName, _privateFlags);
         }
 
+		internal static PropertyInfo GetProperty<TType>(string propertyName)
+		{
+			return typeof(TType).GetProperty(propertyName, _publicFlags);
+		}
+
         internal static PropertyInfo GetPrivateProperty<TType>(string propertyName)
         {
             return typeof(TType).GetProperty(propertyName, _privateFlags);
@@ -42,6 +48,12 @@ namespace SimpleConfigSections
             var field = GetPrivateField<TOwner>(fieldName);
             return field != null ? (obj, value) => field.SetValue(obj, value) : (Action<TOwner, TFieldType>)null;
         }
+
+		internal static Action<TOwner, TFieldType> MakeSetterForProperty<TOwner, TFieldType>(string propertyName)
+		{
+			var property = GetPrivateProperty<TOwner>(propertyName);
+			return property != null ? (obj, value) => property.SetValue(obj, value, null) : (Action<TOwner, TFieldType>)null;
+		}
 
         internal static Action<TOwner, TFieldType> MakeSetterForPrivateProperty<TOwner, TFieldType>(string propertyName)
         {

@@ -1,6 +1,7 @@
 *.user
 *.suo
 *ReSharper*
+.vs
 SimpleConfigSections/*/Debug
 SimpleConfigSections/*/Release
 SimpleConfigSections/*/Nuget
